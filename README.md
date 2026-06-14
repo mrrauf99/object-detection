@@ -1,6 +1,6 @@
 <div align="center">
   
-# 🎯 Vision AI: Flutter Object Detection
+# 🎯 LensAI: Flutter Object Detection
 
 **A high-performance, real-time object detection application built with Flutter and TensorFlow Lite.**
 
@@ -15,7 +15,7 @@
 
 ## ✨ Overview
 
-Vision AI is a cutting-edge cross-platform application that leverages the power of **TensorFlow Lite** and the **SSD MobileNet V1 COCO** model to perform real-time, on-device object detection. Designed with performance and aesthetics in mind, the app processes camera frames instantaneously to draw accurate bounding boxes around recognized objects.
+LensAI is a cutting-edge cross-platform application that leverages the power of **TensorFlow Lite** and the **SSD MobileNet V1 COCO** model to perform real-time, on-device object detection. Designed with performance and aesthetics in mind, the app processes camera frames instantaneously to draw accurate bounding boxes around recognized objects.
 
 ## 🚀 Key Features
 
