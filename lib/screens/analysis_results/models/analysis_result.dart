@@ -38,9 +38,9 @@ class AnalysisResult {
 
   // ── Mock / preview data ──────────────────────────────────────────────────
 
-  static final AnalysisResult mock = AnalysisResult(
+  static const AnalysisResult mock = AnalysisResult(
     imageUrl: 'https://picsum.photos/400/220',
-    detectedObjects: const [
+    detectedObjects: [
       DetectedObject(
           label: 'Person',
           confidence: 0.75,
