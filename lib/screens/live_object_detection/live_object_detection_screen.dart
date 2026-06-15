@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tensorflow_demo/models/detected_object/detected_object_dm.dart';
@@ -74,21 +75,49 @@ class _LiveObjectDetectionScreenState extends State<LiveObjectDetectionScreen> {
     _detector = null;
     _objectDetectorStream = null;
 
-    if (mounted) setState(() {});
+    if (mounted) {
+      setState(() {});
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
+
+    try {
+      if (controller?.value.isStreamingImages == true) {
+        await controller?.stopImageStream();
+      }
+    } catch (_) {}
+
     try {
       await controller?.dispose();
     } catch (_) {}
   }
 
+  bool _isExiting = false;
+
   @override
   Widget build(BuildContext context) {
     ScreenParams.screenSize = MediaQuery.sizeOf(context);
     final controller = _cameraController;
-    return Scaffold(
-      appBar: AppBar(title: const Text('Live Object Detection')),
-      body: controller == null || !controller.value.isInitialized
-          ? Center(child: Text(message ?? 'Initializing...'))
-          : Column(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop || _isExiting) return;
+        _isExiting = true;
+
+        await _disposeCamera();
+
+        if (mounted) {
+          SystemNavigator.pop();
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(title: const Text('Live Object Detection')),
+        body: controller == null || !controller.value.isInitialized
+            ? Center(
+                child: Text(
+                  _isExiting ? 'Closing...' : (message ?? 'Initializing...'),
+                ),
+              )
+            : Column(
               children: [
                 AspectRatio(
                   aspectRatio: 1 / controller.value.aspectRatio,
@@ -162,6 +191,7 @@ class _LiveObjectDetectionScreenState extends State<LiveObjectDetectionScreen> {
                 ),
               ],
             ),
+      ),
     );
   }
 
@@ -211,25 +241,31 @@ class _LiveObjectDetectionScreenState extends State<LiveObjectDetectionScreen> {
 
   /// Initializes the camera by setting [_cameraController].
   Future<void> _initializeCamera() async {
-    cameras = await availableCameras();
-    if (cameras.isEmpty) {
-      message = 'No Camera Available';
-      if (mounted) setState(() {});
-      log('No Camera Available', name: 'LiveDetection');
-      return;
-    }
-    // cameras[0] for back-camera
-    cameraIndex = 0;
-    _updateScreenParamsForCamera(cameraIndex);
+    try {
+      cameras = await availableCameras();
+      if (cameras.isEmpty) {
+        message = 'No Camera Available';
+        if (mounted) setState(() {});
+        log('No Camera Available', name: 'LiveDetection');
+        return;
+      }
+      // cameras[0] for back-camera
+      cameraIndex = 0;
+      _updateScreenParamsForCamera(cameraIndex);
 
-    final camera = cameras[cameraIndex];
-    _cameraController = CameraController(
-      camera,
-      ResolutionPreset.medium,
-      enableAudio: false,
-    );
-    await _cameraController?.initialize();
-    await _cameraController?.setFlashMode(FlashMode.off);
+      final camera = cameras[cameraIndex];
+      _cameraController = CameraController(
+        camera,
+        ResolutionPreset.medium,
+        enableAudio: false,
+      );
+      await _cameraController?.initialize();
+      await _cameraController?.setFlashMode(FlashMode.off);
+    } catch (e) {
+      message = 'Failed to initialize camera';
+      if (mounted) setState(() {});
+      log('Error initializing camera: $e', name: 'LiveDetection');
+    }
   }
 
   Future<void> _initializeDetector() async {
