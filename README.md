@@ -25,9 +25,26 @@ LensAI is a cutting-edge cross-platform application that leverages the power of 
 - **Advanced State Management**: Built with `MobX` for highly reactive, scalable, and boilerplate-free state management.
 - **Dynamic Bounding Boxes**: Smooth, properly scaled bounding boxes mapping model tensor outputs directly to your device screen space.
 
-## 📸 Previews
+## 🎥 Demo Video
 
-> *(Add your screenshots or GIFs here)*
+<table style="border-collapse: collapse;">
+  <tr>
+    <td align="center" style="border: 1px solid #ccc; padding: 10px;">
+      <b>Live Object Detection</b>
+    </td>
+    <td align="center" style="border: 1px solid #ccc; padding: 10px;">
+      <b>Gallery Image Object Detection</b>
+    </td>
+  </tr>
+  <tr>
+    <td style="border: 1px solid #ccc; padding: 10px;">
+      <img src="Live_Object_Detection.gif" width="300"/>
+    </td>
+    <td style="border: 1px solid #ccc; padding: 10px;">
+      <img src="Gallery_Image_Object_Detection.gif" width="300"/>
+    </td>
+  </tr>
+</table>
 
 ## 🛠️ Architecture & Tech Stack
 
